@@ -1,0 +1,101 @@
+ul {
+  list-style: none;
+}
+
+.stocks-list-wrapper {
+  width: 1383px;
+  height: 941px;
+  background-color: #f0f4f7;
+  padding: 56px 41px;
+}
+
+.stocks-list-container {
+  background-color: white;
+  width: 1300px;
+  height: 819px;
+  padding-top: 30px;
+}
+
+.stocks-list-header {
+  padding: 0 30px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.stokr-logo {
+  font-family: LucidaGrande;
+  font-size: 39px;
+  font-weight: bold;
+  text-transform: uppercase;
+  color: #41bf15;
+}
+
+.header-buttons {
+  display: flex;
+}
+
+.remove {
+  display: none;
+}
+
+.stocks-list {
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+}
+
+.stocks-list li {
+  padding: 30px;
+  border-top: 1px solid #e5e5e5;
+}
+
+.stock-name {
+  font-family: Avenir;
+  font-size: 33px;
+  font-weight: 300;
+  color: #59737c;
+}
+
+.stock-stats {
+  float: right;
+}
+
+.stock-price {
+  font-family: HelveticaNeueW01-55Roman;
+  font-size: 30px;
+  text-align: left;
+  color: #59737c;
+}
+
+.stock-change {
+  width: 150px;
+  height: 56px;
+  border-radius: 10px;
+  border-color: transparent;
+  font-family: Avenir;
+  font-size: 34px;
+  font-weight: 300;
+  color: white;
+}
+
+.red {
+  background-color: #ff4f46;
+}
+
+.green {
+  background-color: #63da39;
+}
+
+.arrow-down {
+  transform: rotate(180deg);
+}
+
+.arrow-up,
+.arrow-down {
+  color: #ababab;
+}
+
+.arrow-up:disabled,
+.arrow-down:disabled {
+  color: rgba(171, 171, 171, 0.2);
+}
