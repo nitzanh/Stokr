@@ -25,10 +25,11 @@ let stocks = [
 let showChangeInPercentage = true;
 
 
-function renderStock(stock) {
+function renderStock(stock, stockIndex, stocks) {
   let changeClass = stock.Change < 0 ? 'red' : 'green';
   let change = showChangeInPercentage ? stock.PercentChange : stock.Change;
-
+  let isUpDisabled = stockIndex === 0 ? 'disabled' : '';
+  let isDownDisabled = stockIndex === stocks.length-1 ? 'disabled' : '';
   return `
       <li>
         <div class="stock-div">
@@ -38,8 +39,8 @@ function renderStock(stock) {
             <span class="stock-price">${stock.LastTradePriceOnly}</span>
             <button class="stock-change ${changeClass}">${change}</button>
             <span data-id="${stock.Symbol}">
-              <button class="icon-arrow arrow-up"></button>
-              <button class="icon-arrow arrow-down"></button>
+              <button class="icon-arrow arrow-up" ${isUpDisabled}></button>
+              <button class="icon-arrow arrow-down" ${isDownDisabled}></button>
             </span>
           </span>
         </div>
@@ -67,8 +68,6 @@ function render() {
                         </div>
                        </div>`;
 
-  main.querySelector('.stocks-list li:first-of-type .arrow-up').setAttribute('disabled', '');
-  main.querySelector('.stocks-list li:last-of-type .arrow-down').setAttribute('disabled', '');
   addUlClickHandler();
 }
 
