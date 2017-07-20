@@ -1,25 +1,38 @@
+html {
+  box-sizing: border-box;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: inherit;
+}
+
 ul {
   list-style: none;
+  margin: 0;
 }
 
 .stocks-list-wrapper {
   width: 1383px;
   height: 941px;
   background-color: #f0f4f7;
-  padding: 56px 41px;
+  padding: 45px;
+  margin: 0 auto;
 }
 
 .stocks-list-container {
   background-color: white;
-  width: 1300px;
-  height: 819px;
-  padding-top: 30px;
+  width: 100%;
+  height: 100%;
 }
 
 .stocks-list-header {
+  height: 130px;
   padding: 0 30px;
   display: flex;
   justify-content: space-between;
+  align-items: center;
 }
 
 .stokr-logo {
@@ -32,6 +45,7 @@ ul {
 
 .header-buttons {
   display: flex;
+  align-items: center;
 }
 
 .header-buttons button {
@@ -40,6 +54,7 @@ ul {
   color: #8f8f8f;
   font-size: 42px;
   font-weight: 300;
+  line-height: 100%;
 }
 
 .remove {
