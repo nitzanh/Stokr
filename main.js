@@ -27,23 +27,29 @@ let showChangeInPercentage = true;
 
 function renderStock(stock) {
   let changeClass = stock.Change < 0 ? 'red' : 'green';
-  let change = showChangeInPercentage ? stock.PercentChange : stock.Change ;
+  let change = showChangeInPercentage ? stock.PercentChange : stock.Change;
+
   return `
-      <li data-id="${stock.Symbol}">
-        <button class="remove"></button>
-        <span class="stock-name">${stock.Symbol} (${stock.Name})</span>
-        <span class="stock-stats">
-          <span class="stock-price">${stock.LastTradePriceOnly}</span>
-          <button class="stock-change ${changeClass}">${change}</button>
-          <button class="icon-arrow arrow-up"></button>
-          <button class="icon-arrow arrow-down"></button>
-        </span>
+      <li>
+        <div class="stock-div">
+          <button class="remove"></button>
+          <span class="stock-name">${stock.Symbol} (${stock.Name})</span>
+          <span class="stock-stats">
+            <span class="stock-price">${stock.LastTradePriceOnly}</span>
+            <button class="stock-change ${changeClass}">${change}</button>
+            <span data-id="${stock.Symbol}">
+              <button class="icon-arrow arrow-up"></button>
+              <button class="icon-arrow arrow-down"></button>
+            </span>
+          </span>
+        </div>
       </li>`;
 }
 
 function render() {
   const main = document.querySelector('main');
   const stocksHTML = stocks.map(renderStock).join('');
+
   main.innerHTML = `<div class="stocks-list-wrapper">
                       <div class="stocks-list-container">
                         <div class="stocks-list-header">
@@ -55,8 +61,11 @@ function render() {
                           <li><button class="icon-settings"></button></li>
                           </ul>
                         </div>
-                        <ul class="stocks-list">${stocksHTML}</ul>
-                        </div></div>`;
+                        <ul class="stocks-list">
+                          ${stocksHTML}
+                         </ul>
+                        </div>
+                       </div>`;
 
   main.querySelector('.stocks-list li:first-of-type .arrow-up').setAttribute('disabled', '');
   main.querySelector('.stocks-list li:last-of-type .arrow-down').setAttribute('disabled', '');
@@ -66,15 +75,31 @@ function render() {
 function addUlClickHandler() {
   const ul = document.querySelector('.stocks-list');
   ul.addEventListener('click', handleUlClick);
-
 }
 
 render();
 
 function handleUlClick(event) {
+  const target = event.target;
   // if a 'stock change' button was clicked - update all stock change buttons text
-  if (event.target.classList.contains('stock-change')) {
+  if (target.classList.contains('stock-change')) {
     showChangeInPercentage = !showChangeInPercentage;
     render();
+    return;
   }
+  // reorder stocks button clicked
+  if (target.classList.contains('icon-arrow')) {
+    const stockId = target.parentNode.dataset.id;
+    const index = stocks.findIndex((stock) => stock.Symbol === stockId);
+    const swapWith = target.classList.contains('arrow-up') ? index - 1 : index + 1;
+    swap(stocks, index, swapWith);
+    render();
+    return;
+  }
+}
+
+function swap(array, i, j) {
+  const tmp = array[i];
+  array[i] = array[j];
+  array[j] = tmp;
 }
