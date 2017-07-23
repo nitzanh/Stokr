@@ -80,14 +80,30 @@ ul {
 }
 
 .stock-stats {
-  float: right;
+  display: inline-block;
+}
+
+.stock-div {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.stock-div > div {
+  display: flex;
+  align-items: center;
+}
+
+.stock-change,
+.stock-price {
+  font-family: Avenir;
+  font-weight: 300;
 }
 
 .stock-price {
-  font-family: HelveticaNeueW01-55Roman;
-  font-size: 30px;
-  text-align: left;
   color: #59737c;
+  font-size: 30px;
+  padding-right: 20px;
 }
 
 .stock-change {
@@ -95,9 +111,7 @@ ul {
   height: 56px;
   border-radius: 10px;
   border-color: transparent;
-  font-family: Avenir;
   font-size: 34px;
-  font-weight: 300;
   color: white;
 }
 
@@ -116,9 +130,21 @@ ul {
 .arrow-up,
 .arrow-down {
   color: #ababab;
+  font-size: 20px;
+  padding: 0;
+  border: none;
+  background: none;
 }
 
 .arrow-up:disabled,
 .arrow-down:disabled {
   color: rgba(171, 171, 171, 0.2);
+}
+
+.reorder-stocks {
+  padding-left: 20px;
+  display: flex;
+  width: 40px;
+  flex-direction: column;
+  justify-content: space-around;
 }

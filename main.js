@@ -1,34 +1,67 @@
 (function() {
+  'use strict'
+
   let stocks = [
     {
       "Symbol": "WIX",
       "Name": "Wix.com Ltd.",
       "Change": "0.750000",
       "PercentChange": "+1.51%",
-      "LastTradePriceOnly": "76.099998"
+      "LastTradePriceOnly": "76.099998",
+      "CapitalMarket": "1111B"
     },
     {
       "Symbol": "MSFT",
       "Name": "Microsoft Corporation",
       "PercentChange": "-2.09%",
       "Change": "-0.850006",
-      "LastTradePriceOnly": "69.620003"
+      "LastTradePriceOnly": "69.620003",
+      "CapitalMarket": "1111B"
     },
     {
       "Symbol": "YHOO",
       "Name": "Yahoo! Inc.",
       "Change": "0.279999",
       "PercentChange": "+1.11%",
-      "LastTradePriceOnly": "50.599998"
+      "LastTradePriceOnly": "50.599998",
+      "CapitalMarket": "1111B"
     }
   ];
 
-  let showChangeInPercentage = true;
+  let stockChangeDisplay = 'percent';
 
+  function toggleStockDisplay() {
+    switch (stockChangeDisplay) {
+      case 'percent':
+        stockChangeDisplay = 'value';
+        break;
+      case 'value' :
+        stockChangeDisplay = 'capital';
+        break;
+      default:
+        stockChangeDisplay = "percent";
+    }
+  }
+
+  function getChangeByDisplayMode(stock) {
+    switch (stockChangeDisplay) {
+      case 'percent':
+        return stock.PercentChange;
+        break;
+      case 'value' :
+        return parseFloat(stock.Change).toFixed(2);
+        break;
+      case 'capital' :
+        return stock.CapitalMarket;
+        break;
+      default:
+        return;
+    }
+  }
 
   function renderStock(stock, stockIndex, stocks) {
     let changeClass = stock.Change < 0 ? 'red' : 'green';
-    let change = showChangeInPercentage ? stock.PercentChange : stock.Change;
+    let change = getChangeByDisplayMode(stock);
     let isUpDisabled = stockIndex === 0 ? 'disabled' : '';
     let isDownDisabled = stockIndex === stocks.length - 1 ? 'disabled' : '';
     return `
@@ -36,14 +69,16 @@
           <div class="stock-div">
             <button class="remove"></button>
             <span class="stock-name">${stock.Symbol} (${stock.Name})</span>
-            <span class="stock-stats">
-              <span class="stock-price">${stock.LastTradePriceOnly}</span>
-              <button class="stock-change ${changeClass}">${change}</button>
-              <span data-id="${stock.Symbol}">
+            <div>
+              <div class="stock-stats">
+                <span class="stock-price">${parseFloat(stock.LastTradePriceOnly).toFixed(2)}</span>
+                <button class="stock-change ${changeClass}">${change}</button>
+              </div>
+              <div class="reorder-stocks" data-id="${stock.Symbol}">
                 <button class="icon-arrow arrow-up" ${isUpDisabled}></button>
                 <button class="icon-arrow arrow-down" ${isDownDisabled}></button>
-              </span>
-            </span>
+              </div>
+            </div>
           </div>
         </li>`;
   }
@@ -83,9 +118,8 @@
     const target = event.target;
     // if a 'stock change' button was clicked - update all stock change buttons text
     if (target.classList.contains('stock-change')) {
-      showChangeInPercentage = !showChangeInPercentage;
-      render();
-      return;
+      toggleStockDisplay();
+      return render();
     }
     // reorder stocks button clicked
     if (target.classList.contains('icon-arrow')) {
@@ -93,8 +127,7 @@
       const index = stocks.findIndex((stock) => stock.Symbol === stockId);
       const swapWith = target.classList.contains('arrow-up') ? index - 1 : index + 1;
       swap(stocks, index, swapWith);
-      render();
-      return;
+      return render();
     }
   }
 
