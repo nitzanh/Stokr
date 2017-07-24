@@ -5,7 +5,10 @@
   'use strict'
 
   let state = {
-    stocks:[
+    ui: {
+      displayMode: 'percent'
+    },
+    stocks: [
       {
         "Symbol": "WIX",
         "Name": "Wix.com Ltd.",
@@ -33,13 +36,13 @@
     ]
   };
 
-  function getStocks() {
-    return state.stocks;
+  function getState() {
+    return state;
   }
 
   window.Stokr = window.Stokr || {};
   window.Stokr.Model = {
-    getStocks
+    getState
   };
 
 })();

@@ -4,25 +4,9 @@
 (function () {
   'use strict'
 
-  let state = {
-    displayMode : 'percent'
-  }
 
-  function toggleStockDisplay() {
-    switch (state.displayMode) {
-      case 'percent':
-        state.displayMode = 'value';
-        break;
-      case 'value' :
-        state.displayMode = 'capital';
-        break;
-      default:
-        state.displayMode = "percent";
-    }
-  }
-
-  function getChangeByDisplayMode(stock) {
-    switch (state.displayMode) {
+  function getChangeByDisplayMode(stock, displayMode) {
+    switch (displayMode) {
       case 'percent':
         return stock.PercentChange;
         break;
@@ -37,33 +21,35 @@
     }
   }
 
-  function renderStock(stock, stockIndex, stocks) {
-      let changeClass = stock.Change < 0 ? 'red' : 'green';
-      let change = getChangeByDisplayMode(stock);
-      let isUpDisabled = stockIndex === 0 ? 'disabled' : '';
-      let isDownDisabled = stockIndex === stocks.length - 1 ? 'disabled' : '';
-      return `
-        <li>
-          <div class="stock-div">
-            <button class="remove"></button>
-            <span class="stock-name">${stock.Symbol} (${stock.Name})</span>
-            <div>
-              <div class="stock-stats">
-                <span class="stock-price">${parseFloat(stock.LastTradePriceOnly).toFixed(2)}</span>
-                <button id='${stock.Symbol}' class="stock-change ${changeClass}">${change}</button>
-              </div>
-              <div class="reorder-stocks" data-id="${stock.Symbol}">
-                <button class="icon-arrow arrow-up" ${isUpDisabled}></button>
-                <button class="icon-arrow arrow-down" ${isDownDisabled}></button>
+  function renderStock(displayMode) {
+    return function(stock, stockIndex, stocks) {
+        let changeClass = stock.Change < 0 ? 'red' : 'green';
+        let change = getChangeByDisplayMode(stock, displayMode);
+        let isUpDisabled = stockIndex === 0 ? 'disabled' : '';
+        let isDownDisabled = stockIndex === stocks.length - 1 ? 'disabled' : '';
+        return `
+          <li>
+            <div class="stock-div">
+              <button class="remove"></button>
+              <span class="stock-name">${stock.Symbol} (${stock.Name})</span>
+              <div>
+                <div class="stock-stats">
+                  <span class="stock-price">${parseFloat(stock.LastTradePriceOnly).toFixed(2)}</span>
+                  <button id='${stock.Symbol}' class="stock-change ${changeClass}">${change}</button>
+                </div>
+                <div class="reorder-stocks" data-id="${stock.Symbol}">
+                  <button class="icon-arrow arrow-up" ${isUpDisabled}></button>
+                  <button class="icon-arrow arrow-down" ${isDownDisabled}></button>
+                </div>
               </div>
             </div>
-          </div>
-        </li>`;
+          </li>`;
+      }
     }
 
-  function render(stocks) {
+  function render(stocks, uiState) {
     const main = document.querySelector('main');
-    const stocksHTML = stocks.map(renderStock).join('');
+    const stocksHTML = stocks.map(renderStock(uiState.displayMode)).join('');
 
     main.innerHTML = `<div class="stocks-list-wrapper">
                         <div class="stocks-list-container">
@@ -85,9 +71,9 @@
     setClickHandlers();
   }
 
-  function setStocksChange(stocks) {
-    stocks.forEach(item => {
-      document.querySelector(`#${item.Symbol}`).innerHTML = getChangeByDisplayMode(item);
+  function updateStocksChange(stocks, displayMode) {
+    stocks.forEach(stock => {
+      document.querySelector(`#${stock.Symbol}`).innerHTML = getChangeByDisplayMode(stock, displayMode);
     });
   }
 
@@ -98,13 +84,19 @@
 
     // arrow buttons click handlers
     const arrowButtons = document.querySelectorAll('.stocks-list .arrow-up, .stocks-list .arrow-down');
-    arrowButtons.forEach((button) => button.addEventListener('click', window.Stokr.Ctrl.handleArrowClick));
+    arrowButtons.forEach((button) => {
+      const stockId = button.parentNode.dataset.id;
+      const isUpClicked = button.classList.contains('arrow-up');
+      button.addEventListener('click', () =>
+        window.Stokr.Ctrl.handleArrowClick(stockId, isUpClicked));
+    });
   }
+
+
 
   window.Stokr = window.Stokr || {};
   window.Stokr.View = {
     render,
-    setStocksChange,
-    toggleStockDisplay
+    updateStocksChange
   };
 })();
