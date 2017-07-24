@@ -61,8 +61,7 @@
         </li>`;
     }
 
-  function render(state) {
-    const stocks = state.stocks;
+  function render(stocks) {
     const main = document.querySelector('main');
     const stocksHTML = stocks.map(renderStock).join('');
 
