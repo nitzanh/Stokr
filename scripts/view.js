@@ -47,6 +47,37 @@
       }
     }
 
+    function renderFilter(isFilterShown) {
+      if (!isFilterShown) {
+        return '';
+      }
+      return `<div class="filter-panel">
+                <form action="">
+                  <div>
+                    <label for="byName">By Name</label>
+                    <input type="text" name="byName" id="byName">
+                  </div>
+                  <div>
+                  <label for="byGain">By Gain</label>
+                    <select name="byGain">
+                      <option value="all">All</option>
+                      <option value="losing">Losing</option>
+                      <option value="gaining">Gaining</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label for="byRangeFrom">By Range: From</label>
+                    <input type="text" name="byRangeFrom" id="byName">
+                  </div>
+                  <div>
+                    <label for="byRangeTo">By Range: To</label>
+                    <input type="text" name="byRangeTo" id="byName">
+                  </div>
+                  <button class="apply-filter" type="submit">Apply</button>
+                </form>
+              </div>`;
+    }
+
   function render(stocks, uiState) {
     const main = document.querySelector('main');
     const stocksHTML = stocks.map(renderStock(uiState.displayMode)).join('');
@@ -62,11 +93,12 @@
                             <li><button class="icon-settings"></button></li>
                             </ul>
                           </div>
-                          <ul class="stocks-list">
-                            ${stocksHTML}
-                           </ul>
-                          </div>
-                         </div>`;
+                          ${renderFilter(uiState.isFilterShown)}
+                         <ul class="stocks-list">
+                          ${stocksHTML}
+                         </ul>
+                        </div>
+                       </div>`;
 
     setClickHandlers();
   }

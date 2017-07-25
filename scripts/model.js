@@ -6,7 +6,8 @@
 
   let state = {
     ui: {
-      displayMode: 'percent'
+      displayMode: 'percent',
+      isFilterShown: false
     },
     stocks: [
       {
