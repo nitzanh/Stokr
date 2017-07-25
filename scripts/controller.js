@@ -37,10 +37,17 @@
     }
   }
 
+  function toggleFilter() {
+    const state = window.Stokr.Model.getState();
+    state.ui.isFilterShown = !state.ui.isFilterShown;
+    window.Stokr.View.render(state.stocks, state.ui);
+  }
+
   window.Stokr = window.Stokr || {};
   window.Stokr.Ctrl = {
     handleArrowClick,
-    handleChangeBtnClick
+    handleChangeBtnClick,
+    toggleFilter
   };
 
   const state = window.Stokr.Model.getState();
