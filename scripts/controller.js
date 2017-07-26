@@ -35,6 +35,7 @@
       default:
         uiState.displayMode = "percent";
     }
+    storeState();
   }
 
   function toggleFilter() {
@@ -46,6 +47,7 @@
   function applyFilter(filters) {
     const state = window.Stokr.Model.getState();
     state.ui.filters = filters;
+    storeState();
     renderView(state);
 
   }
@@ -94,8 +96,8 @@
   };
 
   function updateStocks(state) {
-    if (state.stocksSymbols.length > 0) {
-      const userStocks = state.stocksSymbols.join();
+    if (state.userStocks.length > 0) {
+      const userStocks = state.userStocks.join();
       return fetch(`http://localhost:7000/quotes?q=${userStocks}`)
         .then(function (data) {
           return data.json();
@@ -106,7 +108,21 @@
     }
   }
 
-  const state = window.Stokr.Model.getState();
+  function storeState() {
+    const uiStateKey = 'stokr-state';
+    const state = window.Stokr.Model.getState();
+    localStorage.setItem(uiStateKey, JSON.stringify(state.ui));
+  }
+
+  function loadState() {
+    const uiStateKey = 'stokr-state';
+    if (uiStateKey in localStorage) {
+      window.Stokr.Model.setUiState(JSON.parse(localStorage.getItem(uiStateKey)));
+    }
+    return window.Stokr.Model.getState();
+  }
+
+  const state = loadState();
   renderView(state);
   updateStocks(state)
   .then(() => renderView(state));

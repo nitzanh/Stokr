@@ -15,7 +15,7 @@
         byRangeTo: ''
       }
     },
-    stocksSymbols : [
+    userStocks : [
       "WIX",
       "MSFT"
     ]
@@ -25,9 +25,14 @@
     return state;
   }
 
+  function setUiState(newState) {
+    state.ui = newState;
+  }
+
   window.Stokr = window.Stokr || {};
   window.Stokr.Model = {
-    getState
+    getState,
+    setUiState
   };
 
 })();
