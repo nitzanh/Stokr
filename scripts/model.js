@@ -7,7 +7,13 @@
   let state = {
     ui: {
       displayMode: 'percent',
-      isFilterShown: false
+      isFilterShown: false,
+      filters: {
+        byName: '',
+        byGain: 'all',
+        byRangeFrom: '',
+        byRangeTo: ''
+      }
     },
     stocks: [
       {

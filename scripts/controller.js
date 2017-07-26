@@ -15,7 +15,7 @@
     const index = state.stocks.findIndex((stock) => stock.Symbol === stockId);
     const swapWith = isUpClicked ? index - 1 : index + 1;
     swap(state.stocks, index, swapWith);
-    return window.Stokr.View.render(state.stocks, state.ui);
+    renderView(state);
   }
 
   function swap(array, i, j) {
@@ -40,17 +40,59 @@
   function toggleFilter() {
     const state = window.Stokr.Model.getState();
     state.ui.isFilterShown = !state.ui.isFilterShown;
-    window.Stokr.View.render(state.stocks, state.ui);
+    renderView(state);
+  }
+
+  function applyFilter(filters) {
+    const state = window.Stokr.Model.getState();
+    state.ui.filters = filters;
+    renderView(state);
+
+  }
+
+  function getFilteresStocks(stocks, filters) {
+    return stocks.filter(function (stock) {
+      return matchByName(stock, filters.byName) &&
+        matchByGain(stock, filters.byGain) &&
+        matchByRange(stock, filters.byRangeFrom, filters.byRangeTo);
+    });
+  }
+
+  function matchByName(stock, byName) {
+    return byName === '' || stock.Name.includes(byName) || stock.Symbol.includes(byName);
+  }
+
+  function matchByGain(stock, byGain) {
+    return byGain === 'all' ||
+            (byGain === 'gaining' && stock.Change >= 0) ||
+            (byGain === 'losing' && stock.Change < 0);
+  }
+
+  function matchByRange(stock, rangeFrom, rangeTo) {
+    const percentChange = parseFloat(stock.PercentChange);
+    let fromFloat = parseFloat(rangeFrom);
+    fromFloat = isNaN(fromFloat) ? -Infinity : fromFloat;
+    let toFloat = parseFloat(rangeTo);
+    toFloat = isNaN(toFloat) ? Infinity : toFloat;
+    return percentChange >= fromFloat && percentChange <= toFloat;
+  }
+
+  function renderView(state) {
+    const filters = state.ui.filters;
+    const shouldFilter = state.ui.isFilterShown &&
+      (filters.byName || filters.byGain !== 'all' || filters.byRangeFrom || filters.byRangeTo);
+    const stocksShown = shouldFilter ? getFilteresStocks(state.stocks, state.ui.filters) : state.stocks;
+    window.Stokr.View.render(stocksShown, state.ui);
   }
 
   window.Stokr = window.Stokr || {};
   window.Stokr.Ctrl = {
     handleArrowClick,
     handleChangeBtnClick,
-    toggleFilter
+    toggleFilter,
+    applyFilter
   };
 
   const state = window.Stokr.Model.getState();
-  window.Stokr.View.render(state.stocks, state.ui);
-
+  renderView(state);
 })();
