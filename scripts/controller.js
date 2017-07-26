@@ -41,6 +41,16 @@
   function toggleFilter() {
     const state = window.Stokr.Model.getState();
     state.ui.isFilterShown = !state.ui.isFilterShown;
+    // clear the filter when closing it
+    if (!state.ui.isFilterShown) {
+      state.ui.filters = {
+        byName: '',
+        byGain: 'all',
+        byRangeFrom: '',
+        byRangeTo: ''
+      };
+    }
+    storeState();
     renderView(state);
   }
 
@@ -52,7 +62,10 @@
 
   }
 
-  function getFilteresStocks(stocks, filters) {
+  function getFilteredStocks(stocks, filters) {
+    if (typeof stocks === 'undefined') {
+      return [];
+    }
     return stocks.filter(function (stock) {
       return matchByName(stock, filters.byName) &&
         matchByGain(stock, filters.byGain) &&
@@ -83,7 +96,7 @@
     const filters = state.ui.filters;
     const shouldFilter = state.ui.isFilterShown &&
       (filters.byName !== '' || filters.byGain !== 'all' || filters.byRangeFrom !== '' || filters.byRangeTo !== '');
-    const stocksShown = shouldFilter ? getFilteresStocks(state.stocks, state.ui.filters) : state.stocks;
+    const stocksShown = shouldFilter ? getFilteredStocks(state.stocks, state.ui.filters) : state.stocks;
     window.Stokr.View.render(stocksShown, state.ui);
   }
 
