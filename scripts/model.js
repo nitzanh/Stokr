@@ -18,7 +18,8 @@
     userStocks : [
       "WIX",
       "MSFT"
-    ]
+    ],
+    stocks: []
   };
 
   function getState() {

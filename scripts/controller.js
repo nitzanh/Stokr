@@ -63,9 +63,6 @@
   }
 
   function getFilteredStocks(stocks, filters) {
-    if (typeof stocks === 'undefined') {
-      return [];
-    }
     return stocks.filter(function (stock) {
       return matchByName(stock, filters.byName) &&
         matchByGain(stock, filters.byGain) &&
@@ -100,13 +97,10 @@
     window.Stokr.View.render(stocksShown, state.ui);
   }
 
-  window.Stokr = window.Stokr || {};
-  window.Stokr.Ctrl = {
-    handleArrowClick,
-    handleChangeBtnClick,
-    toggleFilter,
-    applyFilter
-  };
+  function handleHashChange() {
+    const state = window.Stokr.Model.getState();
+    renderView(state);
+  }
 
   function updateStocks(state) {
     if (state.userStocks.length > 0) {
@@ -134,6 +128,16 @@
     }
     return window.Stokr.Model.getState();
   }
+
+  window.Stokr = window.Stokr || {};
+  window.Stokr.Ctrl = {
+    handleArrowClick,
+    handleChangeBtnClick,
+    toggleFilter,
+    applyFilter,
+    handleHashChange
+  };
+
 
   const state = loadState();
   renderView(state);

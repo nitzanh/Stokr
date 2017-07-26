@@ -9,13 +9,10 @@
     switch (displayMode) {
       case 'percent':
         return `${parseFloat(stock.realtime_chg_percent).toFixed(2)}%`;
-        break;
       case 'value' :
         return parseFloat(stock.Change).toFixed(2);
-        break;
       case 'capital' :
         return stock.MarketCapitalization;
-        break;
       default:
         return;
     }
@@ -45,50 +42,69 @@
               </div>
             </div>
           </li>`;
-      }
     }
+  }
 
-    function renderFilter(uiState) {
-      if (!uiState.isFilterShown) {
-        return '';
-      }
-      return `<div class="filter-panel">
-                <form action="">
-                  <div>
-                    <label for="byName">By Name</label>
-                    <input type="text" name="byName" id="byName" value="${uiState.filters.byName}">
-                  </div>
-                  <div>
-                    <label for="byGain">By Gain</label>
-                    <select name="byGain">
-                      <option value="all" ${uiState.filters.byGain === 'all' ? 'selected' :''}>All</option>
-                      <option value="losing" ${uiState.filters.byGain === 'losing' ? 'selected' :''}>Losing</option>
-                      <option value="gaining" ${uiState.filters.byGain === 'gaining' ? 'selected' :''}>Gaining</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label for="byRangeFrom">By Range: From</label>
-                    <input type="text" name="byRangeFrom" id="byRangeFrom" value="${uiState.filters.byRangeFrom}">
-                  </div>
-                  <div>
-                    <label for="byRangeTo">By Range: To</label>
-                    <input type="text" name="byRangeTo" id="byRangeTo" value="${uiState.filters.byRangeTo}">
-                  </div>
-                  <button class="apply-filter" type="submit">Apply</button>
-                </form>
-              </div>`;
+  function renderFilter(uiState) {
+    if (!uiState.isFilterShown) {
+      return '';
     }
+    return `<div class="filter-panel">
+              <form action="">
+                <div>
+                  <label for="byName">By Name</label>
+                  <input type="text" name="byName" id="byName" value="${uiState.filters.byName}">
+                </div>
+                <div>
+                  <label for="byGain">By Gain</label>
+                  <select name="byGain">
+                    <option value="all" ${uiState.filters.byGain === 'all' ? 'selected' :''}>All</option>
+                    <option value="losing" ${uiState.filters.byGain === 'losing' ? 'selected' :''}>Losing</option>
+                    <option value="gaining" ${uiState.filters.byGain === 'gaining' ? 'selected' :''}>Gaining</option>
+                  </select>
+                </div>
+                <div>
+                  <label for="byRangeFrom">By Range: From</label>
+                  <input type="text" name="byRangeFrom" id="byRangeFrom" value="${uiState.filters.byRangeFrom}">
+                </div>
+                <div>
+                  <label for="byRangeTo">By Range: To</label>
+                  <input type="text" name="byRangeTo" id="byRangeTo" value="${uiState.filters.byRangeTo}">
+                </div>
+                <button class="apply-filter" type="submit">Apply</button>
+              </form>
+            </div>`;
+  }
 
   function render(stocks, uiState) {
-    const main = document.querySelector('main');
-    const stocksHTML = typeof stocks === 'undefined' ? '' :stocks.map(renderStock(uiState)).join('');
+    if (window.location.hash === '#search') {
+      renderSearchPage();
+    } else {
+      renderStockListPage(stocks, uiState);
+    }
+  }
 
+  function renderSearchPage() {
+    const main = document.querySelector('main');
+    main.innerHTML = `<div class="search-header">
+              <div>
+                <input type="text" name="search-field">
+                <a href="#">Cancel</a>
+              </div>
+              <div class="search-results"></div>
+          </div>`;
+  }
+
+  function renderStockListPage(stocks, uiState) {
+    const main = document.querySelector('main');
+
+    const stocksHTML = stocks.map(renderStock(uiState)).join('');
     main.innerHTML = `<div class="stocks-list-wrapper">
                         <div class="stocks-list-container">
                           <div class="stocks-list-header">
                             <h1 class="stokr-logo">Stokr</h1>
                             <ul class="header-buttons">
-                            <li><button class="icon-search"></button></li>
+                            <li><a href="#search" class="icon-search"></a></li>
                             <li><button class="icon-refresh"></button></li>
                             <li><button class="icon-filter ${uiState.isFilterShown ? 'green':''}"></button></li>
                             <li><button class="icon-settings"></button></li>
@@ -145,7 +161,10 @@
     }
   }
 
+  window.addEventListener('hashchange', function () {
+    window.Stokr.Ctrl.handleHashChange(window.location.hash);
 
+  });
 
   window.Stokr = window.Stokr || {};
   window.Stokr.View = {
