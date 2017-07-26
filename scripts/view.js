@@ -8,13 +8,13 @@
   function getChangeByDisplayMode(stock, displayMode) {
     switch (displayMode) {
       case 'percent':
-        return stock.PercentChange;
+        return `${parseFloat(stock.realtime_chg_percent).toFixed(2)}%`;
         break;
       case 'value' :
         return parseFloat(stock.Change).toFixed(2);
         break;
       case 'capital' :
-        return stock.CapitalMarket;
+        return stock.MarketCapitalization;
         break;
       default:
         return;
@@ -81,7 +81,7 @@
 
   function render(stocks, uiState) {
     const main = document.querySelector('main');
-    const stocksHTML = stocks.map(renderStock(uiState)).join('');
+    const stocksHTML = typeof stocks === 'undefined' ? '' :stocks.map(renderStock(uiState)).join('');
 
     main.innerHTML = `<div class="stocks-list-wrapper">
                         <div class="stocks-list-container">

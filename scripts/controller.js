@@ -69,7 +69,7 @@
   }
 
   function matchByRange(stock, rangeFrom, rangeTo) {
-    const percentChange = parseFloat(stock.PercentChange);
+    const percentChange = parseFloat(stock.realtime_chg_percent);
     let fromFloat = parseFloat(rangeFrom);
     fromFloat = isNaN(fromFloat) ? -Infinity : fromFloat;
     let toFloat = parseFloat(rangeTo);
@@ -80,7 +80,7 @@
   function renderView(state) {
     const filters = state.ui.filters;
     const shouldFilter = state.ui.isFilterShown &&
-      (filters.byName || filters.byGain !== 'all' || filters.byRangeFrom || filters.byRangeTo);
+      (filters.byName !== '' || filters.byGain !== 'all' || filters.byRangeFrom !== '' || filters.byRangeTo !== '');
     const stocksShown = shouldFilter ? getFilteresStocks(state.stocks, state.ui.filters) : state.stocks;
     window.Stokr.View.render(stocksShown, state.ui);
   }
@@ -93,6 +93,21 @@
     applyFilter
   };
 
+  function updateStocks(state) {
+    if (state.stocksSymbols.length > 0) {
+      const userStocks = state.stocksSymbols.join();
+      return fetch(`http://localhost:7000/quotes?q=${userStocks}`)
+        .then(function (data) {
+          return data.json();
+        })
+        .then(function (responseJson) {
+          state.stocks = responseJson.query.results.quote;
+        });
+    }
+  }
+
   const state = window.Stokr.Model.getState();
   renderView(state);
+  updateStocks(state)
+  .then(() => renderView(state));
 })();
