@@ -117,7 +117,7 @@
                         </div>
                        </div>`;
 
-    setClickHandlers(uiState);
+    setStocksPageEventHandlers(uiState);
   }
 
   function updateStocksChange(stocks, displayMode) {
@@ -126,12 +126,22 @@
     });
   }
 
-  function setClickHandlers(uiState) {
-    // 'stock change' buttons click handlers
-    const changeButtons = document.querySelectorAll('.stocks-list .stock-change');
-    changeButtons.forEach((button) => button.addEventListener('click', window.Stokr.Ctrl.handleChangeBtnClick));
+  function setApplyFilterClickHandler() {
+    const filterForm = document.querySelector('.filter-panel form');
+    filterForm.addEventListener('submit', (event) => {
+      event.preventDefault();
+      const formElements = event.target.elements;
+      const filter = {
+        byName : formElements.byName.value,
+        byGain : formElements.byGain.options[formElements.byGain.selectedIndex].value,
+        byRangeFrom : formElements.byRangeFrom.value,
+        byRangeTo : formElements.byRangeTo.value
+      };
+      window.Stokr.Ctrl.applyFilter(filter);
+    })
+  }
 
-    // arrow buttons click handlers
+  function setReorderClickHandlers() {
     const arrowButtons = document.querySelectorAll('.stocks-list .arrow-up, .stocks-list .arrow-down');
     arrowButtons.forEach((button) => {
       const stockId = button.parentNode.dataset.id;
@@ -139,25 +149,23 @@
       button.addEventListener('click', () =>
         window.Stokr.Ctrl.handleArrowClick(stockId, isUpClicked));
     });
+  }
+
+  function setStocksPageEventHandlers(uiState) {
+    // 'stock change' buttons click handlers
+    const changeButtons = document.querySelectorAll('.stocks-list .stock-change');
+    changeButtons.forEach((button) => button.addEventListener('click', window.Stokr.Ctrl.handleChangeBtnClick));
+
+    // arrow buttons click handlers
+    setReorderClickHandlers();
 
     // toggle filter panel on filter icon click
     const filterButton = document.querySelector('.icon-filter');
     filterButton.addEventListener('click', window.Stokr.Ctrl.toggleFilter);
 
-    // on filter apply
+    // on apply filter button click
     if (uiState.isFilterShown) {
-      const filterForm = document.querySelector('.filter-panel form');
-      filterForm.addEventListener('submit', (event) => {
-        event.preventDefault();
-        const formElements = event.target.elements;
-         const filter = {
-          byName : formElements.byName.value,
-          byGain : formElements.byGain.options[formElements.byGain.selectedIndex].value,
-          byRangeFrom : formElements.byRangeFrom.value,
-          byRangeTo : formElements.byRangeTo.value
-      };
-        window.Stokr.Ctrl.applyFilter(filter);
-      })
+      setApplyFilterClickHandler();
     }
   }
 
