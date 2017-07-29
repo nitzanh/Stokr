@@ -179,6 +179,11 @@
     });
   }
 
+  function setRefreshClickHAndler() {
+    const refreshBtn = document.querySelector('.icon-refresh');
+    refreshBtn.addEventListener('click', window.Stokr.Ctrl.handleRefresh);
+  }
+
   function setStocksPageEventHandlers(uiState) {
     // 'stock change' buttons click handlers
     const changeButtons = document.querySelectorAll('.stocks-list .stock-change');
@@ -195,6 +200,8 @@
     if (uiState.isFilterShown) {
       setApplyFilterClickHandler();
     }
+
+    setRefreshClickHAndler();
   }
 
   function setSearchPageEventHandler() {
@@ -210,8 +217,8 @@
     addStockButtons.forEach((button) => {
       const stockId = button.dataset.id;
       button.addEventListener('click', () => {
-          window.Stokr.Ctrl.addStock(stockId);
-          window.location.hash = '#';
+          window.Stokr.Ctrl.addStock(stockId)
+          .then(() => window.location.hash = '#');
         });
     });
   }

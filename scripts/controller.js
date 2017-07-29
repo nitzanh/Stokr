@@ -104,8 +104,7 @@
     const state = window.Stokr.Model.getState();
     state.userStocks.push(stockId);
     localStorage.setItem('stokr-user-stocks', JSON.stringify(state.userStocks));
-    updateStocks(state)
-      .then(renderView.bind({}, state));
+    return updateStocks(state);
   }
 
   function renderView(state) {
@@ -132,6 +131,13 @@
           state.stocks = responseJson.query.results.quote;
         });
     }
+    return Promise.resolve();
+  }
+
+  function handleRefresh() {
+    const state = window.Stokr.Model.getState();
+    updateStocks(state)
+      .then(() => renderView(state));
   }
 
   function storeUiState() {
@@ -160,7 +166,8 @@
     applyFilter,
     handleHashChange,
     applySearch,
-    addStock
+    addStock,
+    handleRefresh
   };
 
   function init() {
