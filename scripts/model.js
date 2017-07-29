@@ -30,10 +30,14 @@
     state.ui = newState;
   }
 
+  function setUserStocks(stockList) {
+    state.userStocks = stockList;
+  }
   window.Stokr = window.Stokr || {};
   window.Stokr.Model = {
     getState,
-    setUiState
+    setUiState,
+    setUserStocks
   };
 
 })();

@@ -35,7 +35,7 @@
       default:
         uiState.displayMode = "percent";
     }
-    storeState();
+    storeUiState();
   }
 
   function toggleFilter() {
@@ -50,14 +50,14 @@
         byRangeTo: ''
       };
     }
-    storeState();
+    storeUiState();
     renderView(state);
   }
 
   function applyFilter(filters) {
     const state = window.Stokr.Model.getState();
     state.ui.filters = filters;
-    storeState();
+    storeUiState();
     renderView(state);
 
   }
@@ -103,6 +103,7 @@
   function addStock(stockId) {
     const state = window.Stokr.Model.getState();
     state.userStocks.push(stockId);
+    localStorage.setItem('stokr-user-stocks', JSON.stringify(state.userStocks));
     updateStocks(state)
       .then(renderView.bind({}, state));
   }
@@ -133,7 +134,7 @@
     }
   }
 
-  function storeState() {
+  function storeUiState() {
     const uiStateKey = 'stokr-state';
     const state = window.Stokr.Model.getState();
     localStorage.setItem(uiStateKey, JSON.stringify(state.ui));
@@ -144,6 +145,10 @@
     if (uiStateKey in localStorage) {
       window.Stokr.Model.setUiState(JSON.parse(localStorage.getItem(uiStateKey)));
     }
+    if ('stokr-user-stocks' in localStorage) {
+      window.Stokr.Model.setUserStocks(JSON.parse(localStorage.getItem('stokr-user-stocks')));
+    }
+
     return window.Stokr.Model.getState();
   }
 
