@@ -11,6 +11,7 @@ html {
 ul {
   list-style: none;
   margin: 0;
+  padding: 0;
 }
 
 @font-face {
@@ -22,9 +23,8 @@ ul {
   url("assets/fonts/HelveticaNeueW01-55Roman.svg#helvetica_neue") format("svg");
 }
 
-.stocks-list-wrapper {
+main {
   width: 1383px;
-  height: 941px;
   background-color: #f0f4f7;
   padding: 45px;
   margin: 0 auto;
@@ -202,6 +202,107 @@ ul {
   color: white;
   font-family: HelveticaNeueW01-55Roman;
   font-size: 30px;
+}
+
+
+.search-container {
+  background-color: white;
+  width: 100%;
+  height: 100%;
+}
+
+.search-header {
+  height: 130px;
+  padding: 10px 30px;
+}
+
+.search-header div {
+  border: 1px solid #408be3;
+  border-radius: 20px;
+  padding: 5px 20px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.search-field {
+  width: 100%;
+  border: none;
+  outline: none;
+  font-size: 26px;
+}
+
+.cancel-btn {
+  color: #41bf15;
+  font-family: HelveticaNeueW01-55Roman;
+  font-size: 26px;
+  text-decoration: none;
+}
+
+.search-result {
+  height: 150px;
+  padding: 0 40px;
+  display: flex;
+  font-size: 33px;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid #e5e5e5;
+}
+
+.result-stock-title {
+  display: inline-block;
+}
+
+.add-stock {
+  display: inline-block;
+  width: 1.2em;
+  height: 1.2em;
+  background-color: #41bf15;
+  border-radius: 5px;
+  border-style: none;
+  color: white;
+  font-size: 35px;
+  line-height: 100%;
+}
+
+.result-symbol {
+  color: #59737c;
+  font-family: Avenir;
+  padding-right: 20px;
+}
+
+.result-exchange {
+  color: #1c2527;
+  font-family: Avenir;
+}
+
+.search-placeholder-container {
+  width: 100%;
+  height: 600px;
+  border-top: 1px solid #e5e5e5;
+  position: relative;
+}
+
+.search-placeholder {
+  width: 400px;
+  height: 400px;
+  margin: auto;
+  position: absolute;
+  top: 0; left: 0; bottom: 0; right: 0;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.search-placeholder span {
+  display: block;
+  color: #868686;
+  font-size: 35px;
+  font-family: HelveticaNeueW01-55Roman;
+}
+
+span.icon-search-place-holder {
+  font-size: 220px;
+  color: #D5D5D5;
 }
 
 .hidden {

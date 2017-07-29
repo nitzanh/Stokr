@@ -76,46 +76,74 @@
             </div>`;
   }
 
-  function render(stocks, uiState) {
+  function render(stocks, uiState, searchResults) {
     if (window.location.hash === '#search') {
-      renderSearchPage();
+      renderSearchPage(searchResults);
     } else {
       renderStockListPage(stocks, uiState);
     }
   }
 
-  function renderSearchPage() {
-    const main = document.querySelector('main');
-    main.innerHTML = `<div class="search-header">
-              <div>
-                <input type="text" name="search-field">
-                <a href="#">Cancel</a>
+  function renderSearchResult(result) {
+    return `<li>
+              <div class="search-result">
+                <div result-stock-title>
+                  <span class="result-symbol">${result.symbol}</span>
+                  <span class="result-exchange">${result.exchDisp}</span>
+                </div>
+                <button class="add-stock" data-id="${result.symbol}">+</button>
               </div>
-              <div class="search-results"></div>
-          </div>`;
+            </li>`;
+  }
+
+  function renderSearchResults(results) {
+    if (!results || results.length === 0) {
+      const placeHolderText = results ? 'Not Found' : 'Search';
+      return `<div class="search-placeholder-container">
+                <div class="search-placeholder">
+                  <span class="icon-search-place-holder"></span>
+                  <span>${placeHolderText}</span>
+                </div>
+              </div>`;
+    } else {
+      const searchResults = results.map(renderSearchResult).join('');
+      return `<ul class="search-results">${searchResults}</ul>`;
+    }
+  }
+
+  function renderSearchPage(results) {
+    const main = document.querySelector('main');
+    const searchResults = renderSearchResults(results);
+    main.innerHTML = `<div class="search-container">
+                        <div class="search-header">
+                          <div>
+                            <input class="search-field" type="text">
+                            <a class="cancel-btn" href="#">Cancel</a>
+                          </div>
+                        </div>
+                        ${searchResults}
+                      </div>`;
+
+    setSearchPageEventHandler();
   }
 
   function renderStockListPage(stocks, uiState) {
     const main = document.querySelector('main');
 
     const stocksHTML = stocks.map(renderStock(uiState)).join('');
-    main.innerHTML = `<div class="stocks-list-wrapper">
-                        <div class="stocks-list-container">
-                          <div class="stocks-list-header">
-                            <h1 class="stokr-logo">Stokr</h1>
-                            <ul class="header-buttons">
-                            <li><a href="#search" class="icon-search"></a></li>
-                            <li><button class="icon-refresh"></button></li>
-                            <li><button class="icon-filter ${uiState.isFilterShown ? 'green':''}"></button></li>
-                            <li><button class="icon-settings"></button></li>
-                            </ul>
-                          </div>
-                          ${renderFilter(uiState)}
-                         <ul class="stocks-list">
-                          ${stocksHTML}
-                         </ul>
+    main.innerHTML = `<div class="stocks-list-container">
+                        <div class="stocks-list-header">
+                          <h1 class="stokr-logo">Stokr</h1>
+                          <ul class="header-buttons">
+                          <li><a href="#search" class="icon-search"></a></li>
+                          <li><button class="icon-refresh"></button></li>
+                          <li><button class="icon-filter ${uiState.isFilterShown ? 'green':''}"></button></li>
+                          <li><button class="icon-settings"></button></li>
+                          </ul>
                         </div>
-                       </div>`;
+                        ${renderFilter(uiState)}
+                        <ul class="stocks-list">${stocksHTML}</ul>
+                      </div>`;
 
     setStocksPageEventHandlers(uiState);
   }
@@ -167,6 +195,25 @@
     if (uiState.isFilterShown) {
       setApplyFilterClickHandler();
     }
+  }
+
+  function setSearchPageEventHandler() {
+    const searchInput = document.querySelector('.search-field');
+    searchInput.addEventListener('keypress', function (e) {
+      const key = e.which || e.keyCode;
+      if (key === 13) {
+        window.Stokr.Ctrl.applySearch(searchInput.value);
+      }
+    });
+
+    const addStockButtons = document.querySelectorAll('.add-stock');
+    addStockButtons.forEach((button) => {
+      const stockId = button.dataset.id;
+      button.addEventListener('click', () => {
+          window.Stokr.Ctrl.addStock(stockId);
+          window.location.hash = '#';
+        });
+    });
   }
 
   window.addEventListener('hashchange', function () {

@@ -89,6 +89,24 @@
     return percentChange >= fromFloat && percentChange <= toFloat;
   }
 
+  function applySearch(searchText) {
+    return fetch(`http://localhost:7000/search?q=${searchText}`)
+      .then(function (data) {
+        return data.json();
+      })
+      .then(function (responseJson) {
+        const searchResults = responseJson.ResultSet.Result;
+        window.Stokr.View.render(undefined,undefined,searchResults);
+      });
+  }
+
+  function addStock(stockId) {
+    const state = window.Stokr.Model.getState();
+    state.userStocks.push(stockId);
+    updateStocks(state)
+      .then(renderView.bind({}, state));
+  }
+
   function renderView(state) {
     const filters = state.ui.filters;
     const shouldFilter = state.ui.isFilterShown &&
@@ -135,12 +153,18 @@
     handleChangeBtnClick,
     toggleFilter,
     applyFilter,
-    handleHashChange
+    handleHashChange,
+    applySearch,
+    addStock
   };
 
+  function init() {
+    const state = loadState();
+    renderView(state);
+    updateStocks(state)
+      .then(() => renderView(state));
+  }
 
-  const state = loadState();
-  renderView(state);
-  updateStocks(state)
-  .then(() => renderView(state));
+  init();
+
 })();
